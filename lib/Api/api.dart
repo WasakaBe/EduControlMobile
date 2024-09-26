@@ -1,0 +1,1 @@
+const String baseUrl = 'http://localhost:50003/api'; // Cambia localhost si usas otra IP o dominio
