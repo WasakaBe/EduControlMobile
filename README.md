@@ -43,7 +43,7 @@ Estrategia de Despliegue Canary:
 
 Para el proyecto de la aplicación móvil para alumnos y padres, el despliegue Canary permitirá probar nuevas características, como el módulo de credencial digital, el sistema de autenticación o el historial de asistencia, de manera controlada.
 
-##Tecnologías a utilizar
+## Tecnologías a utilizar
 -BackEnd: python (Flask)
 -Base de Datos: MySQL
 -FrontEnd: Flutter
