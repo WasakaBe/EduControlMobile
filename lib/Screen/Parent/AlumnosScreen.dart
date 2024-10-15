@@ -2,6 +2,7 @@ import 'dart:convert'; // Para decodificar Base64
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:movil_educontrol/Api/api.dart';
+import 'package:movil_educontrol/Components/Feedback/Feedback.dart';
 import 'package:movil_educontrol/Screen/Parent/AlumnoDetallesScreen.dart';
 import 'package:movil_educontrol/Screen/Parent/AsistenciasScreen.dart';
 
@@ -11,13 +12,14 @@ class AlumnosScreen extends StatefulWidget {
   const AlumnosScreen({super.key, required this.idUsuario});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AlumnosScreenState createState() => _AlumnosScreenState();
 }
 
 class _AlumnosScreenState extends State<AlumnosScreen> {
   bool isLoading = false;
   List<dynamic> alumnos = [];
-  TextEditingController _numeroControlController = TextEditingController(); // Controlador para el input de número de control
+  final TextEditingController _numeroControlController = TextEditingController(); // Controlador para el input de número de control
 
   @override
   void initState() {
@@ -102,7 +104,7 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Eliminar Alumno'),
+          title: const Text('Eliminar Alumno'),
           content: Text('¿Estás seguro(a) que deseas eliminar al alumno $nombreAlumno?'),
           actions: <Widget>[
             TextButton(
@@ -143,6 +145,8 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
         _numeroControlController.clear(); // Limpiar el input del número de control
         _showAlert('Alumno agregado exitosamente.');
         _fetchAlumnosAgregados(); // Actualizar la lista
+         // Mostrar el modal de feedback después de agregar un alumno
+      await FeedbackModal.showFeedbackModal(context, idUsuario);
       } else {
         _showAlert('Error al agregar el alumno.');
       }
@@ -207,23 +211,27 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
   }
 
   // Redirigir a la pantalla de HorarioEscolar
-  void _verHorario(int idAlumno) {
+  void _verHorario(int idAlumno)async {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AlumnoDetallesScreen(idAlumno: idAlumno),
       ),
     );
+     // Mostrar feedback después de ver el horario
+  await FeedbackModal.showFeedbackModal(context, widget.idUsuario);
   }
 
   // Redirigir a la pantalla de Asistencias
-  void _verAsistencias(int idAlumno) {
+  void _verAsistencias(int idAlumno)async{
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AsistenciasScreen(idAlumno: idAlumno),
       ),
     );
+     // Mostrar feedback después de ver el horario
+  await FeedbackModal.showFeedbackModal(context, widget.idUsuario);
   }
 
   @override
