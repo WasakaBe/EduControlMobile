@@ -31,14 +31,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
     // Genera un captcha aleatorio
-  void _generateCaptcha() {
-    const chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
-    Random rnd = Random();
-    setState(() {
-      _generatedCaptcha = String.fromCharCodes(Iterable.generate(
-          5, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
-    });
-  }
+void _generateCaptcha() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  Random rnd = Random();
+  setState(() {
+    _generatedCaptcha = String.fromCharCodes(
+      Iterable.generate(5, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
+    );
+    _captchaController.clear(); // Limpiar campo al generar nuevo captcha
+  });
+}
 
    // Método para verificar el captcha
   bool _verifyCaptcha() {
@@ -74,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (checkEmailResponse.statusCode == 404) {
         _showErrorDialog('Su correo es Inexistente');
+          _generateCaptcha(); // Regenerar captcha si el correo es incorrecto
       } else if (checkEmailResponse.statusCode == 200) {
         _login(email, password);
       } else {
@@ -109,11 +112,13 @@ class _LoginScreenState extends State<LoginScreen> {
         final nombreUsuario = data['tbl_users']['nombre_usuario'];
         final int rolUsuario = data['tbl_users']['idRol'];
         final String fotoUsuario = data['tbl_users']['foto_usuario'];
+          _generateCaptcha(); // Regenerar captcha si el correo es incorrecto
         _redirectUserByRole(rolUsuario, nombreUsuario,
             data['tbl_users']['id_usuario'], fotoUsuario);
         _showWelcomeDialog(nombreUsuario);
       } else if (response.statusCode == 401) {
         _showErrorDialog('Su contraseña es incorrecta');
+          _generateCaptcha(); // Regenerar captcha si el correo es incorrecto
       } else {
         _showErrorDialog(data['error'] ?? 'Datos Incorrectos e inexistentes');
       }
