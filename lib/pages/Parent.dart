@@ -39,7 +39,6 @@ class _ParentScreenState extends State<ParentScreen> {
     setState(() {
       _currentIndex = index;
     });
-    
   }
 
   @override
@@ -67,9 +66,7 @@ class _ParentScreenState extends State<ParentScreen> {
                 icon: Icon(Icons.people),
                 label: 'Alumnos',
               ),
-
             ],
-
           ),
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
