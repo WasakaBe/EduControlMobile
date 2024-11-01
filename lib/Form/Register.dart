@@ -21,18 +21,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _apellidoPController = TextEditingController();
   final TextEditingController _apellidoMController = TextEditingController();
-  final TextEditingController _fechaNacimientoController = TextEditingController();
+  final TextEditingController _fechaNacimientoController =
+      TextEditingController();
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
-  final TextEditingController _respuestaPreguntaController = TextEditingController();
+  final TextEditingController _respuestaPreguntaController =
+      TextEditingController();
 
   bool _isLoading = false;
   String? _ipAddress;
   int? _selectedSexo; // Variable para almacenar el sexo seleccionado
   int? _selectedPregunta; // Variable para almacenar la pregunta seleccionada
-  List<dynamic> _sexos = []; // Lista para almacenar los sexos obtenidos de la API
-  List<dynamic> _preguntas = []; // Lista para almacenar las preguntas obtenidas de la API
+  List<dynamic> _sexos =
+      []; // Lista para almacenar los sexos obtenidos de la API
+  List<dynamic> _preguntas =
+      []; // Lista para almacenar las preguntas obtenidas de la API
 
   // Variables para control de borde rojo
   bool _nombreValido = true;
@@ -65,7 +69,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Obtener la IP del dispositivo
   Future<void> _getIPAddress() async {
     try {
-      final List<InternetAddress> addresses = await InternetAddress.lookup('google.com');
+      final List<InternetAddress> addresses =
+          await InternetAddress.lookup('google.com');
       if (addresses.isNotEmpty) {
         setState(() {
           _ipAddress = addresses.first.address;
@@ -86,6 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _sexos = jsonDecode(response.body);
       });
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error al obtener la lista de sexos')),
       );
@@ -100,8 +106,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _preguntas = jsonDecode(response.body);
       });
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error al obtener la lista de preguntas secretas')),
+        const SnackBar(
+            content: Text('Error al obtener la lista de preguntas secretas')),
       );
     }
   }
@@ -115,7 +123,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _register() async {
-    if (!_formKey.currentState!.validate() || _selectedSexo == null || _selectedPregunta == null) {
+    if (!_formKey.currentState!.validate() ||
+        _selectedSexo == null ||
+        _selectedPregunta == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Por favor, complete todos los campos')),
       );
@@ -143,7 +153,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'idRol': 4, // Asignar un rol predeterminado, por ejemplo, estudiante
       'idSexo': _selectedSexo, // Enviar el sexo seleccionado
       'idPregunta': _selectedPregunta, // Enviar la pregunta seleccionada
-      'ip_usuario': _ipAddress ?? 'Desconocida', // Usar la IP obtenida o 'Desconocida' si no se puede obtener
+      'ip_usuario': _ipAddress ??
+          'Desconocida', // Usar la IP obtenida o 'Desconocida' si no se puede obtener
       'idCuentaActivo': 1, // Asignar valor predeterminado
       'respuestaPregunta': _respuestaPreguntaController.text,
     });
@@ -152,17 +163,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final response = await http.post(url, headers: headers, body: body);
 
       if (response.statusCode == 201) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Usuario registrado exitosamente')),
         );
+        // ignore: use_build_context_synchronously
         Navigator.pop(context); // Regresar a la pantalla anterior
       } else {
         final data = jsonDecode(response.body);
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['error'] ?? 'Error al registrar el usuario')),
+          SnackBar(
+              content: Text(data['error'] ?? 'Error al registrar el usuario')),
         );
       }
     } catch (e) {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error en la solicitud: $e')),
       );
@@ -196,9 +212,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           controller: _nombreController,
           decoration: InputDecoration(
             labelText: 'Nombre',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: _nombreValido ? Colors.green : Colors.red), // Bordes dinámicos
+              borderSide: BorderSide(
+                  color: _nombreValido
+                      ? Colors.green
+                      : Colors.red), // Bordes dinámicos
             ),
           ),
           onChanged: (value) {
@@ -221,9 +240,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           controller: _apellidoPController,
           decoration: InputDecoration(
             labelText: 'Apellido Paterno',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: _apellidoPValido ? Colors.green : Colors.red), // Bordes dinámicos
+              borderSide: BorderSide(
+                  color: _apellidoPValido
+                      ? Colors.green
+                      : Colors.red), // Bordes dinámicos
             ),
           ),
           onChanged: (value) {
@@ -246,9 +268,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           controller: _apellidoMController,
           decoration: InputDecoration(
             labelText: 'Apellido Materno',
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: _apellidoMValido ? Colors.green : Colors.red), // Bordes dinámicos
+              borderSide: BorderSide(
+                  color: _apellidoMValido
+                      ? Colors.green
+                      : Colors.red), // Bordes dinámicos
             ),
           ),
           onChanged: (value) {
@@ -257,7 +282,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             });
           },
           validator: (value) {
-            if (value != null && value.isNotEmpty && !_textRegExp.hasMatch(value)) {
+            if (value != null &&
+                value.isNotEmpty &&
+                !_textRegExp.hasMatch(value)) {
               return 'Solo se permiten letras, espacios y acentos';
             }
             return null;
@@ -266,7 +293,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _fechaNacimientoController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Fecha de Nacimiento (YYYY-MM-DD)',
             border: OutlineInputBorder(),
           ),
@@ -286,7 +313,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: [
         TextFormField(
           controller: _correoController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Correo Electrónico',
             border: OutlineInputBorder(),
           ),
@@ -301,7 +328,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _passwordController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Contraseña',
             border: OutlineInputBorder(),
           ),
@@ -316,7 +343,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _telefonoController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Teléfono',
             border: OutlineInputBorder(),
           ),
@@ -377,7 +404,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _respuestaPreguntaController,
-          decoration: const InputDecoration(labelText: 'Respuesta a la Pregunta de Seguridad'),
+          decoration: const InputDecoration(
+              labelText: 'Respuesta a la Pregunta de Seguridad'),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:movil_educontrol/Api/api.dart';
@@ -18,8 +19,42 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+    final TextEditingController _captchaController = TextEditingController();
+
   bool _isLoading = false;
+  String _generatedCaptcha = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _generateCaptcha();
+  }
+
+    // Genera un captcha aleatorio
+void _generateCaptcha() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  Random rnd = Random();
+  setState(() {
+    _generatedCaptcha = String.fromCharCodes(
+      Iterable.generate(5, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))),
+    );
+    _captchaController.clear(); // Limpiar campo al generar nuevo captcha
+  });
+}
+
+   // Método para verificar el captcha
+  bool _verifyCaptcha() {
+    return _captchaController.text == _generatedCaptcha;
+  }
+
   Future<void> _checkEmailAndLogin() async {
+     if (!_verifyCaptcha()) {
+      _showErrorDialog('Captcha incorrecto');
+      _generateCaptcha(); // Regenerar el captcha si es incorrecto
+      _captchaController.clear();
+      return;
+    }
+
     final email = _emailController.text;
     final password = _passwordController.text;
 
@@ -27,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
       _showErrorDialog('Email y contraseña son requeridos');
       return;
     }
-
     setState(() {
       _isLoading = true;
     });
@@ -42,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (checkEmailResponse.statusCode == 404) {
         _showErrorDialog('Su correo es Inexistente');
+          _generateCaptcha(); // Regenerar captcha si el correo es incorrecto
       } else if (checkEmailResponse.statusCode == 200) {
         _login(email, password);
       } else {
@@ -77,11 +112,13 @@ class _LoginScreenState extends State<LoginScreen> {
         final nombreUsuario = data['tbl_users']['nombre_usuario'];
         final int rolUsuario = data['tbl_users']['idRol'];
         final String fotoUsuario = data['tbl_users']['foto_usuario'];
+          _generateCaptcha(); // Regenerar captcha si el correo es incorrecto
         _redirectUserByRole(rolUsuario, nombreUsuario,
             data['tbl_users']['id_usuario'], fotoUsuario);
         _showWelcomeDialog(nombreUsuario);
       } else if (response.statusCode == 401) {
         _showErrorDialog('Su contraseña es incorrecta');
+          _generateCaptcha(); // Regenerar captcha si el correo es incorrecto
       } else {
         _showErrorDialog(data['error'] ?? 'Datos Incorrectos e inexistentes');
       }
@@ -356,6 +393,40 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 30),
+
+  // Captcha con distorsión
+                  CustomPaint(
+                    painter: CaptchaPainter(_generatedCaptcha),
+                    child: Container(
+                      height: 50,
+                               padding: const EdgeInsets.all(20.0),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        '',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+  // Campo de entrada de captcha
+                  TextField(
+                    controller: _captchaController,
+                    decoration: InputDecoration(
+                      labelText: 'Ingrese el texto de arriba',
+                      labelStyle: const TextStyle(color: Colors.white),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.3),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 30),
                   // Botón de Iniciar Sesión
                   SizedBox(
                     width: double.infinity,
@@ -390,5 +461,64 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+}
+
+
+class CaptchaPainter extends CustomPainter {
+  final String captchaText;
+  CaptchaPainter(this.captchaText);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    // Para que el texto esté centrado en el canvas
+    const textStyle = TextStyle(
+      fontSize: 40,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+      backgroundColor: Colors.white,
+      
+    );
+
+    // Coordenadas iniciales para empezar a pintar el texto
+    double startX = 0;
+    double startY = size.height / 2;
+
+    for (int i = 0; i < captchaText.length; i++) {
+      final character = captchaText[i];
+
+      final textSpan = TextSpan(text: character, style: textStyle);
+
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+      );
+
+      textPainter.layout(minWidth: 0, maxWidth: size.width);
+
+      // Aquí aplicamos un ligero movimiento vertical para crear el efecto curveado
+      double dy = sin(i * pi / 5) * 10;
+
+      // Guardamos el estado actual del canvas
+      canvas.save();
+
+      // Movemos el canvas a la posición donde se pintará cada letra
+      canvas.translate(startX, startY + dy);
+
+      // Pintamos el carácter
+      textPainter.paint(canvas, const Offset(0, 0));
+
+      // Restauramos el estado del canvas
+      canvas.restore();
+
+      // Avanzamos la posición en X para la siguiente letra
+      startX += textPainter.width + 5; // Agrega un poco de espaciado entre letras
+    }
+  }
+
+  @override
+  bool shouldRepaint(CaptchaPainter oldDelegate) {
+    return oldDelegate.captchaText != captchaText;
   }
 }
