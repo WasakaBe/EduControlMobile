@@ -6,10 +6,10 @@ import 'package:movil_educontrol/Api/api.dart';
 class AsistenciasScreen extends StatefulWidget {
   final int idAlumno;
 
-  const AsistenciasScreen({Key? key, required this.idAlumno})
-      : super(key: key);
+  const AsistenciasScreen({super.key, required this.idAlumno});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AsistenciasScreenState createState() => _AsistenciasScreenState();
 }
 
