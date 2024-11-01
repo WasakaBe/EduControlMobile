@@ -44,6 +44,7 @@ class _ParentScreenState extends State<ParentScreen> {
     setState(() {
       _currentIndex = index; // Actualiza el índice actual a la pestaña seleccionada
     });
+    
   }
 
   @override
@@ -75,7 +76,9 @@ class _ParentScreenState extends State<ParentScreen> {
                 icon: Icon(Icons.people),
                 label: 'Alumnos', // Etiqueta para la pantalla de Alumnos
               ),
+
             ],
+
           ),
           // Indicador animado que muestra la pestaña seleccionada
           AnimatedPositioned(
