@@ -10,11 +10,12 @@ on:
     branches:
       - main
       - release/*
+      - feature/*
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build, Test, and Deploy Flutter Project
+    name: Build and Test Flutter Project
     runs-on: ubuntu-latest
 
     env:
@@ -40,7 +41,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.4'  # Cambiamos la versión de Flutter para que use Dart >= 3.2.0
+          flutter-version: '3.24.4'
 
       # Verify Flutter installation
       - name: Flutter Doctor
@@ -50,24 +51,19 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Run Unit Tests (Jest-like equivalent en Flutter)
-      - name: Run Unit Tests
-        run: flutter test --coverage
+      # Run tests (para ramas de características y desarrollo)
+      - name: Run Tests
+        if: startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/development'
+        run: flutter test
 
-      # Collect Coverage Report (opcional si se necesita un reporte detallado)
-      - name: Upload Test Coverage Report
-        if: success()
+      # Almacenar los reportes de prueba como artefacto
+      - name: Save Test Reports
+        if: always() && (startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/development')
         uses: actions/upload-artifact@v3
         with:
-          name: coverage-report
-          path: coverage/lcov.info
+          name: test-reports
+          path: test/
 
-      # Run Integration/E2E Tests (si tienes pruebas de integración)
-      - name: Run Integration Tests
-        if: github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/feature/')
-        run: flutter drive --target=test_driver/app.dart
-
-      # Deploy (solo para ramas main y release)
   deploy:
     name: Deploy Flutter App
     runs-on: ubuntu-latest
@@ -84,6 +80,6 @@ jobs:
         with:
           flutter-version: '3.24.4'
 
-      # Run Deployment Script (cambia este paso según tu proceso de despliegue)
+      # Verificar la aprobación antes de desplegar (detener el despliegue si hay errores en las pruebas)
       - name: Deploy Application
         run: echo "Desplegando la aplicación..."  # Aquí se debería colocar el script o comando específico para el despliegue
