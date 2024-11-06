@@ -15,7 +15,7 @@ on:
 jobs:
   build:
     name: Build and Test Flutter Project
-    runs-on: ubuntu-latest  # Sistema operativo definido como Ubuntu
+    runs-on: ubuntu-latest
 
     env:
       FLUTTER_ENV: development
@@ -27,7 +27,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Cache dependencies to speed up builds
+      # Cache Flutter Dependencies
       - name: Cache Flutter Dependencies
         uses: actions/cache@v2
         with:
@@ -40,7 +40,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'
+          flutter-version: 'latest'  # Cambiamos a "latest" para evitar problemas de versiones no encontradas
+          channel: 'beta'
 
       # Verify Flutter installation
       - name: Flutter Doctor
