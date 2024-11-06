@@ -8,7 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.2.2
+  http: ^1.1.1
   flutter_svg: ^2.0.10+1
   qr_code_scanner: ^1.0.0
   intl: ^0.17.0
@@ -24,7 +24,6 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
-
   uses-material-design: true
   assets:
     - assets/background_leaves.jpg
