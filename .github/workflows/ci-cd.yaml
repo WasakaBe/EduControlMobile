@@ -15,12 +15,26 @@ on:
 jobs:
   build:
     name: Build and Test Flutter Project
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Sistema operativo definido como Ubuntu
+
+    env:
+      FLUTTER_ENV: development
+      API_URL: ${{ secrets.API_URL }}
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
     steps:
       # Checkout code from GitHub
       - name: Check out repository
         uses: actions/checkout@v3
+
+      # Cache dependencies to speed up builds
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
       # Setup Flutter SDK
       - name: Setup Flutter
@@ -31,3 +45,7 @@ jobs:
       # Verify Flutter installation
       - name: Flutter Doctor
         run: flutter doctor
+
+      # Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
