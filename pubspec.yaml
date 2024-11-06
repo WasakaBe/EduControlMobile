@@ -3,12 +3,12 @@ description: "A new Flutter project."
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'  # Actualizamos para ser compatible con `http 1.1.1`
+  sdk: '>=3.2.0 <4.0.0'  # Actualizamos para ser compatible con `http 1.1.1`
 
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.1.1  # Podrías intentar con `^1.2.2` también si el problema persiste
+  http: ^1.0.0  # Podrías intentar con `^1.2.2` también si el problema persiste
   flutter_svg: ^2.0.10+1
   qr_code_scanner: ^1.0.0
   intl: ^0.17.0
