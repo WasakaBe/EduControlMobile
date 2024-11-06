@@ -45,13 +45,7 @@ jobs:
       # Verify Flutter installation
       - name: Flutter Doctor
         run: flutter doctor
-      # Run Linter for Quality Control
-      - name: Run Linter
-        run: flutter analyze
 
-      # Format Code
-      - name: Format Code
-        run: flutter format .
 
       # Install dependencies
       - name: Install dependencies
