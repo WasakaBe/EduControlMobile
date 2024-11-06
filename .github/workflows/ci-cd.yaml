@@ -1,0 +1,33 @@
+name: Flutter CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - release/*
+      - feature/*
+  pull_request:
+    branches:
+      - main
+      - release/*
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Test Flutter Project
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code from GitHub
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # Setup Flutter SDK
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.0.0'
+
+      # Verify Flutter installation
+      - name: Flutter Doctor
+        run: flutter doctor
