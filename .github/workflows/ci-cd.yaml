@@ -40,8 +40,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'  # Cambiamos a "latest" para evitar problemas de versiones no encontradas
-          channel: 'beta'
+          flutter-version: 'latest'  # Eliminamos el canal para evitar problemas
 
       # Verify Flutter installation
       - name: Flutter Doctor
