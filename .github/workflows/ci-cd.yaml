@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: Build and Test Flutter Project
+    name: Build, Test, and Deploy Flutter Project
     runs-on: ubuntu-latest
 
     env:
@@ -40,7 +40,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.4'
+          flutter-version: '3.24.4'  # Cambiamos la versión de Flutter para que use Dart >= 3.2.0
 
       # Verify Flutter installation
       - name: Flutter Doctor
@@ -50,10 +50,23 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Run tests (solo para ramas feature y development)
-      - name: Run Tests
+      # Run Unit Tests (Ejecutar pruebas unitarias)
+      - name: Run Unit Tests
         if: startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/development'
-        run: flutter test
+        run: flutter test --coverage
+
+      # Collect Coverage Report (opcional si se necesita un reporte detallado)
+      - name: Upload Test Coverage Report
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage/lcov.info
+
+      # Run Integration/E2E Tests (si tienes pruebas de integración)
+      - name: Run Integration Tests
+        if: github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/feature/')
+        run: flutter drive --target=test_driver/app.dart
 
   deploy:
     name: Deploy Flutter App
@@ -87,7 +100,7 @@ jobs:
         if: failure() || success()
         uses: dawidd6/action-send-mail@v3
         with:
-          server_address: smtp.example.com
+          server_address: smtp.gmail.com
           server_port: 587
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
@@ -101,7 +114,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GIH_TOKEN }}
           script: |
             const status = '${{ job.status }}';
             const prNumber = context.payload.pull_request.number;
