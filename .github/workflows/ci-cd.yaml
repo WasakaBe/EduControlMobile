@@ -40,7 +40,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'  # Intentar con la última versión disponible
+          flutter-version: '3.10.0'  # Especificamos una versión exacta
 
       # Verify Flutter installation
       - name: Flutter Doctor
