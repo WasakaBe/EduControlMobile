@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: Build and Test Flutter Project
+    name: Build, Test, and Deploy Flutter Project
     runs-on: ubuntu-latest
 
     env:
@@ -50,24 +50,24 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # Run tests (solo para ramas feature y development)
-      - name: Run Tests
-        if: startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/development'
-        run: flutter test
+      # Run Unit Tests (Jest-like equivalent en Flutter)
+      - name: Run Unit Tests
+        run: flutter test --coverage
 
-      # Build APK (solo en main y release/*)
-      - name: Build APK
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
-        run: flutter build apk --release
-
-      # Upload APK artifact
-      - name: Upload APK Artifact
-        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+      # Collect Coverage Report (opcional si se necesita un reporte detallado)
+      - name: Upload Test Coverage Report
+        if: success()
         uses: actions/upload-artifact@v3
         with:
-          name: app-release.apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: coverage-report
+          path: coverage/lcov.info
 
+      # Run Integration/E2E Tests (si tienes pruebas de integración)
+      - name: Run Integration Tests
+        if: github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/feature/')
+        run: flutter drive --target=test_driver/app.dart
+
+      # Deploy (solo para ramas main y release)
   deploy:
     name: Deploy Flutter App
     runs-on: ubuntu-latest
