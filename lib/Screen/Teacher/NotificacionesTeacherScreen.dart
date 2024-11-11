@@ -103,7 +103,7 @@ class _NotificacionesTeacherScreenState extends State<NotificacionesTeacherScree
                                   ),
                                 ],
                               ),
-                              trailing: const Icon(Icons.arrow_forward_ios, size: 18, color: Colors.green),
+                           
                               onTap: () {
                                 _showNotificacionDetails(context, notificacion);
                               },
