@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:movil_educontrol/Api/api.dart';
 import 'dart:convert';
@@ -7,20 +7,17 @@ import 'dart:convert';
 class FeedbackModal {
   static Future<void> showFeedbackModal(BuildContext context, int idUsuario) async {
     String selectedEmotion = ''; // Variable para almacenar la emoción seleccionada
-    TextEditingController motivoController = TextEditingController();
-
-    // Rastrea el emoji seleccionado (inicialmente ninguno)
-    String selectedEmoji = '';
+    String selectedEmoji = ''; // Rastrea el emoji seleccionado (inicialmente ninguno)
 
     await showDialog(
       context: context,
+      barrierDismissible: false, // Evitar que el modal se cierre al hacer clic fuera
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             // Obtener el tamaño de la pantalla para ajustar el tamaño del modal
             final screenWidth = MediaQuery.of(context).size.width;
-            final emojiSize = screenWidth * 0.1;  // Tamaño del emoji adaptado a la pantalla
-            final textFieldWidth = screenWidth * 0.8; // Ancho del campo de texto adaptado a la pantalla
+            final emojiSize = screenWidth * 0.1; // Tamaño del emoji adaptado a la pantalla
 
             return AlertDialog(
               shape: RoundedRectangleBorder(
@@ -32,7 +29,7 @@ class FeedbackModal {
                 children: [
                   // Etiqueta para la emoción y emojis para seleccionar
                   const Text(
-                    'Por favor califique su experiencia utilizando los siguientes emojis y comparta cualquier sugerencia sobre cómo podemos mejorar la aplicación móvil.',
+                    'Tu opinión es importante para nosotros.\n ¿Te resultó útil la información que consultaste? Selecciona una opción para valorar la información mostrada:',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16),
                   ),
@@ -47,7 +44,7 @@ class FeedbackModal {
                           "😃",
                           style: TextStyle(
                             fontSize: emojiSize,
-                            color: selectedEmoji == 'satisfecho' ? Colors.yellow : Colors.black,
+                            color: selectedEmoji == 'satisfecho' ? Colors.yellow : Colors.green,
                           ),
                         ),
                         onPressed: () {
@@ -62,7 +59,7 @@ class FeedbackModal {
                           "🙂",
                           style: TextStyle(
                             fontSize: emojiSize,
-                            color: selectedEmoji == 'medio satisfecho' ? Colors.yellow : Colors.black,
+                            color: selectedEmoji == 'medio satisfecho' ? Colors.yellow : Colors.blue,
                           ),
                         ),
                         onPressed: () {
@@ -77,7 +74,7 @@ class FeedbackModal {
                           "😐",
                           style: TextStyle(
                             fontSize: emojiSize,
-                            color: selectedEmoji == 'bien' ? Colors.yellow : Colors.black,
+                            color: selectedEmoji == 'bien' ? Colors.yellow : Colors.orange,
                           ),
                         ),
                         onPressed: () {
@@ -92,7 +89,7 @@ class FeedbackModal {
                           "🙁",
                           style: TextStyle(
                             fontSize: emojiSize,
-                            color: selectedEmoji == 'mal' ? Colors.yellow : Colors.black,
+                            color: selectedEmoji == 'mal' ? Colors.yellow : Colors.red,
                           ),
                         ),
                         onPressed: () {
@@ -107,7 +104,7 @@ class FeedbackModal {
                           "😡",
                           style: TextStyle(
                             fontSize: emojiSize,
-                            color: selectedEmoji == 'peor' ? Colors.yellow : Colors.black,
+                            color: selectedEmoji == 'peor' ? Colors.yellow : Colors.purple,
                           ),
                         ),
                         onPressed: () {
@@ -119,45 +116,25 @@ class FeedbackModal {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  // Campo de texto para el motivo del feedback
-                  SizedBox(
-                    width: textFieldWidth,
-                    child: TextField(
-                      controller: motivoController,
-                      decoration: const InputDecoration(
-                        labelText: 'Motivo del Feedback',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                  ),
                 ],
               ),
               actions: [
-                TextButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
                 ElevatedButton(
                   child: const Text('Enviar Feedback'),
                   onPressed: () async {
-                    // Enviar el feedback al backend
-                    if (selectedEmotion.isNotEmpty && motivoController.text.isNotEmpty) {
-                      // Cerrar el modal de feedback antes de enviar
-                      Navigator.of(context).pop();
-
-                      bool feedbackEnviado = await _sendFeedback(idUsuario, selectedEmotion, motivoController.text);
+                    if (selectedEmotion.isNotEmpty) {
+                      // Enviar el feedback al backend
+                      bool feedbackEnviado = await _sendFeedback(idUsuario, selectedEmotion);
                       if (feedbackEnviado) {
+                        // Cerrar el modal de feedback y mostrar éxito
+                        Navigator.of(context).pop();
                         _showSuccessDialog(context);
                       } else {
                         _showErrorDialog(context, 'Hubo un error al enviar el feedback. Intenta nuevamente.');
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Por favor selecciona una emoción y escribe un motivo')),
+                        const SnackBar(content: Text('Por favor selecciona una emoción')),
                       );
                     }
                   },
@@ -170,7 +147,7 @@ class FeedbackModal {
     );
   }
 
-  static Future<bool> _sendFeedback(int idUsuario, String emocion, String motivo) async {
+  static Future<bool> _sendFeedback(int idUsuario, String emocion) async {
     final url = Uri.parse('$baseUrl/create/feedback'); // Cambia esta URL por la tuya
     try {
       final response = await http.post(
@@ -179,7 +156,6 @@ class FeedbackModal {
         body: jsonEncode({
           'idusuario': idUsuario,
           'emocion_feedback': emocion,
-          'motivo_feedback': motivo,
         }),
       );
       if (response.statusCode == 201) {
@@ -199,6 +175,7 @@ class FeedbackModal {
   static void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: true, // Permitir cerrar después de éxito
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -237,7 +214,7 @@ class FeedbackModal {
           Center(
             child: TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
+                Navigator.of(context).pop(); // Cierra el diálogo de éxito
               },
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
@@ -264,6 +241,7 @@ class FeedbackModal {
   static void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
+      barrierDismissible: false, // No se puede cerrar hasta presionar el botón de intentar de nuevo
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -302,7 +280,7 @@ class FeedbackModal {
           Center(
             child: TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo
+                Navigator.of(context).pop(); // Cierra el diálogo de error
               },
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
