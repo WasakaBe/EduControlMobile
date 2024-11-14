@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:movil_educontrol/Api/api.dart';
+import 'package:movil_educontrol/Components/Feedback/Feedback.dart';
 
 class AlumnoDetallesScreen extends StatefulWidget {
   final int idAlumno;
@@ -26,8 +27,7 @@ class _AlumnoDetallesScreenState extends State<AlumnoDetallesScreen> {
   Future<void> _fetchHorario() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/asignatura/horario/escolar/${widget.idAlumno}')
-      );
+          Uri.parse('$baseUrl/asignatura/horario/escolar/${widget.idAlumno}'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -149,12 +149,26 @@ class _AlumnoDetallesScreenState extends State<AlumnoDetallesScreen> {
     );
   }
 
+  // Función para cerrar la pantalla y mostrar el feedback
+  Future<void> _salirYMostrarFeedback() async {
+    Navigator.pop(context);
+    // Mostrar el modal de feedback después de cerrar la pantalla
+    FeedbackModal.showFeedbackModal(context, widget.idAlumno);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Horario Escolar'),
+          automaticallyImplyLeading: false, // Ocultar la flecha de regreso
         backgroundColor: Colors.teal,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: _salirYMostrarFeedback, // Llama a la función para salir y mostrar el feedback
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

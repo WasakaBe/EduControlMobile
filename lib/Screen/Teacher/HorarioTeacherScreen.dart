@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:movil_educontrol/Api/api.dart';
+import 'package:movil_educontrol/Components/Feedback/Feedback.dart';
 
 class HorarioTeacherScreen extends StatefulWidget {
   final int idUsuario;
@@ -62,7 +63,10 @@ class _HorarioTeacherScreenState extends State<HorarioTeacherScreen> {
             // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(
-              builder: (context) => AlumnosListScreen(alumnos: alumnos),
+               builder: (context) => AlumnosListScreen(
+      alumnos: alumnos,
+      idUsuario: widget.idUsuario, // Pasa el idUsuario
+    ),
             ),
           );
         }
@@ -207,8 +211,14 @@ class _HorarioTeacherScreenState extends State<HorarioTeacherScreen> {
 // Pantalla para mostrar la lista de alumnos
 class AlumnosListScreen extends StatelessWidget {
   final List<dynamic> alumnos;
+ final int idUsuario;
 
-  const AlumnosListScreen({super.key, required this.alumnos});
+ const AlumnosListScreen({
+  super.key,
+  required this.alumnos,
+  required this.idUsuario,
+});
+
 
   @override
   Widget build(BuildContext context) {
@@ -227,9 +237,11 @@ class AlumnosListScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app , color: Colors.white),
+            
             onPressed: () {
               Navigator.pop(
                   context); // Al presionar el botón, se cierra la pantalla
+                   FeedbackModal.showFeedbackModal(context, idUsuario);
             },
           ),
         ],

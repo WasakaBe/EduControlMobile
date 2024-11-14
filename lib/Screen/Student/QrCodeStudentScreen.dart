@@ -30,9 +30,7 @@ class _QrCodeStudentScreenState extends State<QrCodeStudentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Código QR teacher'),
-      ),
+     
       body: Column(
         children: <Widget>[
           Expanded(

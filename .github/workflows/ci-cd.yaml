@@ -69,6 +69,15 @@ jobs:
         if: github.ref == 'refs/heads/development' || startsWith(github.ref, 'refs/heads/feature/')
         run: flutter drive --target=test_driver/app.dart
 
+      # Upload Sentry Release (Integración con Sentry)
+      - name: Upload Sentry Release
+        uses: getsentry/action-release@v1
+        with:
+          environment: ${{ env.FLUTTER_ENV }}
+          version: ${{ github.sha }}
+          auth_token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      
+
   deploy:
     name: Deploy Flutter App
     runs-on: ubuntu-latest

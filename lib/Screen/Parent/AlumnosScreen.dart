@@ -218,8 +218,7 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
         builder: (context) => AlumnoDetallesScreen(idAlumno: idAlumno),
       ),
     );
-     // Mostrar feedback después de ver el horario
-  await FeedbackModal.showFeedbackModal(context, widget.idUsuario);
+
   }
 
   // Redirigir a la pantalla de Asistencias
@@ -230,8 +229,7 @@ class _AlumnosScreenState extends State<AlumnosScreen> {
         builder: (context) => AsistenciasScreen(idAlumno: idAlumno),
       ),
     );
-     // Mostrar feedback después de ver el horario
-  await FeedbackModal.showFeedbackModal(context, widget.idUsuario);
+  
   }
 
   @override

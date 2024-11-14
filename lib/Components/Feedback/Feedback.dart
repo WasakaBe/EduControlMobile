@@ -6,10 +6,10 @@ import 'dart:convert';
 
 class FeedbackModal {
   static Future<void> showFeedbackModal(BuildContext context, int idUsuario) async {
-    String selectedEmotion = ''; // Variable para guardar la emoción seleccionada
+    String selectedEmotion = ''; // Variable para almacenar la emoción seleccionada
     TextEditingController motivoController = TextEditingController();
 
-    // Variable para rastrear la emoción seleccionada (inicialmente ninguna)
+    // Rastrea el emoji seleccionado (inicialmente ninguno)
     String selectedEmoji = '';
 
     await showDialog(
@@ -17,20 +17,29 @@ class FeedbackModal {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            // Obtener el tamaño de la pantalla
+            // Obtener el tamaño de la pantalla para ajustar el tamaño del modal
             final screenWidth = MediaQuery.of(context).size.width;
-            final emojiSize = screenWidth * 0.1;  // Tamaño de emoji adaptado a la pantalla
+            final emojiSize = screenWidth * 0.1;  // Tamaño del emoji adaptado a la pantalla
             final textFieldWidth = screenWidth * 0.8; // Ancho del campo de texto adaptado a la pantalla
 
             return AlertDialog(
-              title: const Text('Déjanos tu Feedback'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: const Text('Agregar Feedback'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Emojis para la emoción usando Wrap para evitar overflow
+                  // Etiqueta para la emoción y emojis para seleccionar
+                  const Text(
+                    'Por favor califique su experiencia utilizando los siguientes emojis y comparta cualquier sugerencia sobre cómo podemos mejorar la aplicación móvil.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 15),
                   Wrap(
-                    spacing: 10.0, // Espaciado horizontal entre emojis
-                    runSpacing: 10.0, // Espaciado vertical entre emojis si es necesario
+                    spacing: 10.0, // Espacio horizontal entre los emojis
+                    runSpacing: 10.0, // Espacio vertical entre los emojis si es necesario
                     alignment: WrapAlignment.center,
                     children: [
                       IconButton(
@@ -110,14 +119,14 @@ class FeedbackModal {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  // Campo de texto para el motivo
+                  const SizedBox(height: 15),
+                  // Campo de texto para el motivo del feedback
                   SizedBox(
                     width: textFieldWidth,
                     child: TextField(
                       controller: motivoController,
                       decoration: const InputDecoration(
-                        labelText: '¿Por qué seleccionaste esa emoción?',
+                        labelText: 'Motivo del Feedback',
                         border: OutlineInputBorder(),
                       ),
                       maxLines: 3,
@@ -137,8 +146,8 @@ class FeedbackModal {
                   onPressed: () async {
                     // Enviar el feedback al backend
                     if (selectedEmotion.isNotEmpty && motivoController.text.isNotEmpty) {
-                      // Cerrar el modal de feedback antes de mostrar el modal de éxito o error
-                      Navigator.of(context).pop(); 
+                      // Cerrar el modal de feedback antes de enviar
+                      Navigator.of(context).pop();
 
                       bool feedbackEnviado = await _sendFeedback(idUsuario, selectedEmotion, motivoController.text);
                       if (feedbackEnviado) {
@@ -204,7 +213,7 @@ class FeedbackModal {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Success!',
+              '¡Éxito!',
               style: TextStyle(
                 color: Colors.green,
                 fontSize: 24,
@@ -238,7 +247,7 @@ class FeedbackModal {
                 ),
               ),
               child: const Text(
-                'CONTINUE',
+                'CONTINUAR',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white,
@@ -269,7 +278,7 @@ class FeedbackModal {
             ),
             const SizedBox(height: 10),
             const Text(
-              'Oops!',
+              '¡Oops!',
               style: TextStyle(
                 color: Colors.red,
                 fontSize: 24,

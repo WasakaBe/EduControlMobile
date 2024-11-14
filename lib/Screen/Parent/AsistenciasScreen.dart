@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:movil_educontrol/Api/api.dart';
 
+import 'package:movil_educontrol/Components/Feedback/Feedback.dart';
+
 class AsistenciasScreen extends StatefulWidget {
   final int idAlumno;
 
@@ -60,6 +62,14 @@ class _AsistenciasScreenState extends State<AsistenciasScreen> {
     });
   }
 
+    // Función para cerrar la pantalla y mostrar el feedback
+  Future<void> _salirYMostrarFeedback() async {
+    Navigator.pop(context);
+    // Mostrar el modal de feedback después de cerrar la pantalla
+    FeedbackModal.showFeedbackModal(context, widget.idAlumno);
+  }
+
+
   // Función para mostrar alertas
   void _showAlert(String message) {
     showDialog(
@@ -80,6 +90,7 @@ class _AsistenciasScreenState extends State<AsistenciasScreen> {
       },
     );
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -89,6 +100,13 @@ class _AsistenciasScreenState extends State<AsistenciasScreen> {
       appBar: AppBar(
         title: const Text('Asistencias del Alumno'),
         backgroundColor: Colors.teal,
+           actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: _salirYMostrarFeedback, // Llama a la función para salir y mostrar el feedback
+          ),
+        ],
+          automaticallyImplyLeading: false, // Ocultar la flecha de regreso
       ),
       backgroundColor: Colors.grey[200],
       body: Container(
@@ -139,10 +157,7 @@ class _AsistenciasScreenState extends State<AsistenciasScreen> {
                                               ),
                                             ),
                                           ),
-                                          const Icon(
-                                            Icons.chevron_right,
-                                            color: Colors.green,
-                                          ),
+                                       
                                         ],
                                       ),
                                       const SizedBox(height: 10),
