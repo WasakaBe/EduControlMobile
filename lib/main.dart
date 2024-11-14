@@ -7,7 +7,7 @@ void main() async {
   await SentryFlutter.init(
     (options) {
       options.dsn =
-          'https://cce2df658b1444eb3b430b42c42e31e4@o4508286180196352.ingest.us.sentry.io/4508286183079936';
+          'https://5741990f766945644633cc3f04f2d033@o4508286180196352.ingest.us.sentry.io/4508297110618112';
 
       // Configurar el muestreo de trazas (Tracing)
       options.tracesSampleRate = 1.0; // Captura el 100% de las transacciones.
