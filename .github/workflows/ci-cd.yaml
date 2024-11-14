@@ -70,16 +70,16 @@ jobs:
         run: flutter drive --target=test_driver/app.dart
 
       # Upload Sentry Release (Integración con Sentry)
+      # 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 sentry auth token
       - name: Upload Sentry Release
         uses: getsentry/action-release@v1
         env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }} # Token de autenticación
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}               # Slug de tu organización
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
         with:
-          projects: flutter                                     # Nombre exacto del proyecto en Sentry
-          environment: ${{ env.FLUTTER_ENV }}                  # Entorno (por ejemplo: development o production)
-          version: ${{ github.sha }}     
-
+          projects: flutter
+          environment: ${{ env.FLUTTER_ENV }}
+          version: ${{ github.sha }}
       
 
   deploy:
