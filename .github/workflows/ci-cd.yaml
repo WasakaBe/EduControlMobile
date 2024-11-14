@@ -72,10 +72,14 @@ jobs:
       # Upload Sentry Release (Integración con Sentry)
       - name: Upload Sentry Release
         uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
         with:
           environment: ${{ env.FLUTTER_ENV }}
           version: ${{ github.sha }}
-          auth_token: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          projects: educontrol-mobile # Reemplaza con el nombre de tu proyecto en Sentry
+
       
 
   deploy:
