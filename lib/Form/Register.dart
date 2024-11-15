@@ -38,10 +38,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   List<dynamic> _preguntas =
       []; // Lista para almacenar las preguntas obtenidas de la API
 
-  // Variables para control de borde rojo
-  bool _nombreValido = true;
-  bool _apellidoPValido = true;
-  bool _apellidoMValido = true;
 
   // Expresión regular para validar solo caracteres de texto (mayúsculas, minúsculas, acentos, y espacios)
   final RegExp _textRegExp = RegExp(r"^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$");
@@ -146,16 +142,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'app_usuario': _apellidoPController.text,
       'apm_usuario': _apellidoMController.text,
       'fecha_nacimiento_usuario': _fechaNacimientoController.text,
-      'token_usuario': tokenUsuario, // Usa el token generado
+      'token_usuario': tokenUsuario,
       'correo_usuario': _correoController.text,
       'pwd_usuario': _passwordController.text,
       'phone_usuario': _telefonoController.text,
-      'idRol': 4, // Asignar un rol predeterminado, por ejemplo, estudiante
-      'idSexo': _selectedSexo, // Enviar el sexo seleccionado
-      'idPregunta': _selectedPregunta, // Enviar la pregunta seleccionada
-      'ip_usuario': _ipAddress ??
-          'Desconocida', // Usar la IP obtenida o 'Desconocida' si no se puede obtener
-      'idCuentaActivo': 1, // Asignar valor predeterminado
+      'idRol': 4,
+      'idSexo': _selectedSexo,
+      'idPregunta': _selectedPregunta,
+      'ip_usuario': _ipAddress ?? 'Desconocida',
+      'idCuentaActivo': 1,
       'respuestaPregunta': _respuestaPreguntaController.text,
     });
 
@@ -168,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SnackBar(content: Text('Usuario registrado exitosamente')),
         );
         // ignore: use_build_context_synchronously
-        Navigator.pop(context); // Regresar a la pantalla anterior
+        Navigator.pop(context);
       } else {
         final data = jsonDecode(response.body);
         // ignore: use_build_context_synchronously
@@ -210,21 +205,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: [
         TextFormField(
           controller: _nombreController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Nombre',
-            border: const OutlineInputBorder(),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: _nombreValido
-                      ? Colors.green
-                      : Colors.red), // Bordes dinámicos
-            ),
+            border: OutlineInputBorder(),
           ),
-          onChanged: (value) {
-            setState(() {
-              _nombreValido = _textRegExp.hasMatch(value);
-            });
-          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Este campo es requerido';
@@ -238,21 +222,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _apellidoPController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Apellido Paterno',
-            border: const OutlineInputBorder(),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: _apellidoPValido
-                      ? Colors.green
-                      : Colors.red), // Bordes dinámicos
-            ),
+            border: OutlineInputBorder(),
           ),
-          onChanged: (value) {
-            setState(() {
-              _apellidoPValido = _textRegExp.hasMatch(value);
-            });
-          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Este campo es requerido';
@@ -266,21 +239,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _apellidoMController,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Apellido Materno',
-            border: const OutlineInputBorder(),
-            errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: _apellidoMValido
-                      ? Colors.green
-                      : Colors.red), // Bordes dinámicos
-            ),
+            border: OutlineInputBorder(),
           ),
-          onChanged: (value) {
-            setState(() {
-              _apellidoMValido = value.isEmpty || _textRegExp.hasMatch(value);
-            });
-          },
           validator: (value) {
             if (value != null &&
                 value.isNotEmpty &&
@@ -304,6 +266,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
             return null;
           },
         ),
+        const SizedBox(height: 10),
+        DropdownButtonFormField<int>(
+          decoration: const InputDecoration(labelText: 'Sexo'),
+          value: _selectedSexo,
+          items: _sexos.map<DropdownMenuItem<int>>((sexo) {
+            return DropdownMenuItem<int>(
+              value: sexo['id_sexos'],
+              child: Text(sexo['nombre_sexo']),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              _selectedSexo = value;
+            });
+          },
+          validator: (value) {
+            if (value == null) {
+              return 'Por favor, seleccione un sexo';
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 10),
       ],
     );
   }
@@ -349,37 +334,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           keyboardType: TextInputType.phone,
         ),
-      ],
-    );
-  }
-
-  Widget _buildSection3() {
-    return Column(
-      children: [
-        // Campo de selección para el sexo
-        DropdownButtonFormField<int>(
-          decoration: const InputDecoration(labelText: 'Sexo'),
-          value: _selectedSexo,
-          items: _sexos.map<DropdownMenuItem<int>>((sexo) {
-            return DropdownMenuItem<int>(
-              value: sexo['id_sexos'],
-              child: Text(sexo['nombre_sexo']),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              _selectedSexo = value;
-            });
-          },
-          validator: (value) {
-            if (value == null) {
-              return 'Por favor, seleccione un sexo';
-            }
-            return null;
-          },
-        ),
         const SizedBox(height: 10),
-        // Campo de selección para la pregunta
         DropdownButtonFormField<int>(
           decoration: const InputDecoration(labelText: 'Pregunta Secreta'),
           value: _selectedPregunta,
@@ -406,6 +361,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           controller: _respuestaPreguntaController,
           decoration: const InputDecoration(
               labelText: 'Respuesta a la Pregunta de Seguridad'),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Este campo es requerido';
+            }
+            return null;
+          },
         ),
       ],
     );
@@ -429,7 +390,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     _buildSection1(),
                     _buildSection2(),
-                    _buildSection3(),
                   ],
                 ),
               ),
@@ -441,12 +401,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onPressed: _previousStep,
                       child: const Text('Anterior'),
                     ),
-                  if (_currentStep < 2)
+                  if (_currentStep < 1)
                     ElevatedButton(
                       onPressed: _nextStep,
                       child: const Text('Siguiente'),
                     ),
-                  if (_currentStep == 2 && !_isLoading)
+                  if (_currentStep == 1 && !_isLoading)
                     ElevatedButton(
                       onPressed: _register,
                       child: const Text('Registrar'),

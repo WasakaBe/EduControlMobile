@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movil_educontrol/Form/Register.dart';
 import 'package:movil_educontrol/Form/login.dart';
+import 'package:movil_educontrol/term.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
@@ -20,7 +21,6 @@ void main() async {
   );
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
       home: const WelcomeScreen(),
       routes: {
         '/login': (context) => const LoginScreen(),
+        '/terms': (context) => const TermScreen(),
       },
     );
   }
@@ -64,11 +65,23 @@ class WelcomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const Spacer(flex: 2),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Column(
                     children: [
-                      Text(
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          double imageSize = constraints.maxWidth * 0.3;
+
+                          return Image(
+                            image: const AssetImage('assets/cbta.png'),
+                            width: imageSize,
+                            height: imageSize,
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
                         'EDU CONTROL',
                         style: TextStyle(
                           fontSize: 36,
@@ -77,8 +90,8 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 10),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'Experimentando una vida bella de estudiante',
                         style: TextStyle(
                           fontSize: 16,
@@ -103,8 +116,10 @@ class WelcomeScreen extends StatelessWidget {
                         height: 50,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent, // Botón transparente
-                            side: const BorderSide(color: Colors.white), // Borde blanco
+                            backgroundColor:
+                                Colors.transparent, // Botón transparente
+                            side: const BorderSide(
+                                color: Colors.white), // Borde blanco
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                             ),
@@ -162,7 +177,8 @@ class WelcomeScreen extends StatelessWidget {
                   child: Center(
                     child: TextButton(
                       onPressed: () {
-                        // Acción para los Términos de Servicio
+                        // Redirige a la pantalla de Términos de Servicio
+                        Navigator.pushNamed(context, '/terms');
                       },
                       child: const Text(
                         'Términos de Servicio',
