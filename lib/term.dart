@@ -8,7 +8,9 @@ class TermScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Términos de Servicio'),
+         automaticallyImplyLeading: false, // Ocultar la flecha de regreso
       ),
+      
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(

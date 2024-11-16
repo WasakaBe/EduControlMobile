@@ -86,132 +86,134 @@ class _NotificacionesStudentScreenState
   Widget build(BuildContext context) {
     int totalPages = (notificaciones.length / itemsPerPage).ceil(); // Total de páginas
 
-    return Scaffold(
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage != null
-              ? Center(child: Text(errorMessage!))
-              : notificaciones.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'No se encontraron notificaciones',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        Expanded(
-                          child: Center( // Para centrar vertical y horizontalmente las notificaciones
-                            child: ListView.builder(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: (notificaciones.length < itemsPerPage)
-                                  ? notificaciones.length
-                                  : ((currentPage + 1) * itemsPerPage >
-                                          notificaciones.length
-                                      ? notificaciones.length % itemsPerPage
-                                      : itemsPerPage),
-                              itemBuilder: (context, index) {
-                                int actualIndex =
-                                    index + currentPage * itemsPerPage;
-                                final notificacion = notificaciones[actualIndex];
-                                return Center(
-                                  child: SizedBox( // Para ajustar el ancho del contenedor
-                                    width: MediaQuery.of(context).size.width * 0.9,
-                                    child: Card(
-                                      color: Colors.white,
-                                      elevation: 4,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      margin: const EdgeInsets.only(bottom: 15),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              notificacion[
-                                                  'subject_notificacion'],
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () async => false, // Bloqueo permanente del deslizamiento
+      child: Scaffold(
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : errorMessage != null
+                ? Center(child: Text(errorMessage!))
+                : notificaciones.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No se encontraron notificaciones',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Expanded(
+                            child: Center(
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(16),
+                                itemCount: (notificaciones.length < itemsPerPage)
+                                    ? notificaciones.length
+                                    : ((currentPage + 1) * itemsPerPage >
+                                            notificaciones.length
+                                        ? notificaciones.length % itemsPerPage
+                                        : itemsPerPage),
+                                itemBuilder: (context, index) {
+                                  int actualIndex =
+                                      index + currentPage * itemsPerPage;
+                                  final notificacion = notificaciones[actualIndex];
+                                  return Center(
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.9,
+                                      child: Card(
+                                        color: Colors.white,
+                                        elevation: 4,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        margin: const EdgeInsets.only(bottom: 15),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                notificacion[
+                                                    'subject_notificacion'],
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.message,
-                                                    color: Colors.teal[700],
-                                                    size: 20),
-                                                const SizedBox(width: 8),
-                                                Expanded(
-                                                  child: Text(
-                                                    'Mensaje: ${notificacion['message_notificacion']}',
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.message,
+                                                      color: Colors.teal[700],
+                                                      size: 20),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Mensaje: ${notificacion['message_notificacion']}',
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.black54,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                children: [
+                                                  Icon(Icons.calendar_today,
+                                                      color: Colors.teal[700],
+                                                      size: 20),
+                                                  const SizedBox(width: 8),
+                                                  Text(
+                                                    'Fecha: ${notificacion['fecha_notificaciones']}',
                                                     style: const TextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 14,
                                                       color: Colors.black54,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.calendar_today,
-                                                    color: Colors.teal[700],
-                                                    size: 20),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  'Fecha: ${notificacion['fecha_notificaciones']}',
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.black54,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                        // Controles de paginación centrados
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.arrow_back),
-                              onPressed: currentPage > 0
-                                  ? () {
-                                      setState(() {
-                                        currentPage--;
-                                      });
-                                    }
-                                  : null,
-                            ),
-                            Text('Página ${currentPage + 1} de $totalPages'),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_forward),
-                              onPressed: currentPage < totalPages - 1
-                                  ? () {
-                                      setState(() {
-                                        currentPage++;
-                                      });
-                                    }
-                                  : null,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.arrow_back),
+                                onPressed: currentPage > 0
+                                    ? () {
+                                        setState(() {
+                                          currentPage--;
+                                        });
+                                      }
+                                    : null,
+                              ),
+                              Text('Página ${currentPage + 1} de $totalPages'),
+                              IconButton(
+                                icon: const Icon(Icons.arrow_forward),
+                                onPressed: currentPage < totalPages - 1
+                                    ? () {
+                                        setState(() {
+                                          currentPage++;
+                                        });
+                                      }
+                                    : null,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+      ),
     );
   }
 }

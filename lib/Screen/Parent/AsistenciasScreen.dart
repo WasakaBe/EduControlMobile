@@ -11,7 +11,6 @@ class AsistenciasScreen extends StatefulWidget {
   const AsistenciasScreen({super.key, required this.idAlumno});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AsistenciasScreenState createState() => _AsistenciasScreenState();
 }
 
@@ -62,163 +61,166 @@ class _AsistenciasScreenState extends State<AsistenciasScreen> {
     });
   }
 
-    // Función para cerrar la pantalla y mostrar el feedback
+  // Función para cerrar la pantalla y mostrar el feedback
   Future<void> _salirYMostrarFeedback() async {
     Navigator.pop(context);
     // Mostrar el modal de feedback después de cerrar la pantalla
     FeedbackModal.showFeedbackModal(context, widget.idAlumno);
   }
 
-
   // Función para mostrar alertas
   void _showAlert(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Información'),
-          content: Text(message),
-          actions: <Widget>[
-            ElevatedButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        return WillPopScope(
+          onWillPop: () async => false, // Bloquear el deslizamiento hacia atrás
+          child: AlertDialog(
+            title: const Text('Información'),
+            content: Text(message),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
         );
       },
     );
   }
-  
 
   @override
   Widget build(BuildContext context) {
     int totalPages = (notificaciones.length / itemsPerPage).ceil(); // Total de páginas
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Asistencias del Alumno'),
-        backgroundColor: Colors.teal,
-           actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: _salirYMostrarFeedback, // Llama a la función para salir y mostrar el feedback
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async => false, // Bloquear permanentemente el deslizamiento
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Asistencias del Alumno'),
+          backgroundColor: Colors.teal,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.exit_to_app),
+              onPressed: _salirYMostrarFeedback, // Llama a la función para salir y mostrar el feedback
+            ),
+          ],
           automaticallyImplyLeading: false, // Ocultar la flecha de regreso
-      ),
-      backgroundColor: Colors.grey[200],
-      body: Container(
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : notificaciones.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No se encontraron notificaciones de asistencia.',
-                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                    ),
-                  )
-                : Column(
-                    children: [
-                      Expanded(
-                        child: ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: (currentPage + 1) * itemsPerPage > notificaciones.length
-                              ? notificaciones.length % itemsPerPage
-                              : itemsPerPage,
-                          itemBuilder: (context, index) {
-                            int actualIndex = index + currentPage * itemsPerPage;
-                            final notificacion = notificaciones[actualIndex];
-                            return Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Card(
-                                elevation: 6,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16), // Bordes redondeados
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.notifications,
-                                              color: Colors.green, size: 30),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text(
-                                              notificacion['subject_notificacion'],
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black87,
+        ),
+        backgroundColor: Colors.grey[200],
+        body: Container(
+          child: isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : notificaciones.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No se encontraron notificaciones de asistencia.',
+                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: (currentPage + 1) * itemsPerPage > notificaciones.length
+                                ? notificaciones.length % itemsPerPage
+                                : itemsPerPage,
+                            itemBuilder: (context, index) {
+                              int actualIndex = index + currentPage * itemsPerPage;
+                              final notificacion = notificaciones[actualIndex];
+                              return Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Card(
+                                  elevation: 6,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16), // Bordes redondeados
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.notifications,
+                                                color: Colors.green, size: 30),
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Text(
+                                                notificacion['subject_notificacion'],
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                       
-                                        ],
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        notificacion['message_notificacion'],
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black54,
+                                          ],
                                         ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.calendar_today,
-                                              color: Colors.black54, size: 20),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            'Fecha: ${notificacion['fecha_notificaciones']}',
-                                            style: const TextStyle(
-                                              color: Colors.black54,
-                                            ),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          notificacion['message_notificacion'],
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black54,
                                           ),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.calendar_today,
+                                                color: Colors.black54, size: 20),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              'Fecha: ${notificacion['fecha_notificaciones']}',
+                                              style: const TextStyle(
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      // Controles de paginación
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back),
-                            onPressed: currentPage > 0
-                                ? () {
-                                    setState(() {
-                                      currentPage--;
-                                    });
-                                  }
-                                : null,
-                          ),
-                          Text('Página ${currentPage + 1} de $totalPages'),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_forward),
-                            onPressed: currentPage < totalPages - 1
-                                ? () {
-                                    setState(() {
-                                      currentPage++;
-                                    });
-                                  }
-                                : null,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        // Controles de paginación
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back),
+                              onPressed: currentPage > 0
+                                  ? () {
+                                      setState(() {
+                                        currentPage--;
+                                      });
+                                    }
+                                  : null,
+                            ),
+                            Text('Página ${currentPage + 1} de $totalPages'),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_forward),
+                              onPressed: currentPage < totalPages - 1
+                                  ? () {
+                                      setState(() {
+                                        currentPage++;
+                                      });
+                                    }
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+        ),
       ),
     );
   }

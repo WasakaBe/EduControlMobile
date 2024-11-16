@@ -59,59 +59,61 @@ class _NotificacionesTeacherScreenState extends State<NotificacionesTeacherScree
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _errorMessage.isNotEmpty
-              ? Center(child: Text(_errorMessage))
-              : _notificaciones.isEmpty
-                  ? const Center(child: Text('No hay notificaciones'))
-                  : ListView.builder(
-                      itemCount: _notificaciones.length,
-                      itemBuilder: (context, index) {
-                        final notificacion = _notificaciones[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 2,
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: ListTile(
-                              leading: const Icon(Icons.notifications, color: Colors.green),
-                              title: Text(
-                                notificacion['subject_notificacion_doc'],
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 5),
-                                  Text(notificacion['message_notificacion_doc']),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    'Fecha: ${notificacion['fecha_notificaciones_doc']}',
-                                    style: const TextStyle(fontSize: 12, color: Colors.black54),
+    return WillPopScope(
+      onWillPop: () async => false, // Bloqueo permanente del deslizamiento
+      child: Scaffold(
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _errorMessage.isNotEmpty
+                ? Center(child: Text(_errorMessage))
+                : _notificaciones.isEmpty
+                    ? const Center(child: Text('No hay notificaciones'))
+                    : ListView.builder(
+                        itemCount: _notificaciones.length,
+                        itemBuilder: (context, index) {
+                          final notificacion = _notificaciones[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
-                           
-                              onTap: () {
-                                _showNotificacionDetails(context, notificacion);
-                              },
+                              child: ListTile(
+                                leading: const Icon(Icons.notifications, color: Colors.green),
+                                title: Text(
+                                  notificacion['subject_notificacion_doc'],
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 5),
+                                    Text(notificacion['message_notificacion_doc']),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      'Fecha: ${notificacion['fecha_notificaciones_doc']}',
+                                      style: const TextStyle(fontSize: 12, color: Colors.black54),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  _showNotificacionDetails(context, notificacion);
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+      ),
     );
   }
 

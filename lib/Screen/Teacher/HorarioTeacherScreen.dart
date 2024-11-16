@@ -63,10 +63,10 @@ class _HorarioTeacherScreenState extends State<HorarioTeacherScreen> {
             // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(
-               builder: (context) => AlumnosListScreen(
-      alumnos: alumnos,
-      idUsuario: widget.idUsuario, // Pasa el idUsuario
-    ),
+              builder: (context) => AlumnosListScreen(
+                alumnos: alumnos,
+                idUsuario: widget.idUsuario, // Pasa el idUsuario
+              ),
             ),
           );
         }
@@ -211,99 +211,99 @@ class _HorarioTeacherScreenState extends State<HorarioTeacherScreen> {
 // Pantalla para mostrar la lista de alumnos
 class AlumnosListScreen extends StatelessWidget {
   final List<dynamic> alumnos;
- final int idUsuario;
+  final int idUsuario;
 
- const AlumnosListScreen({
-  super.key,
-  required this.alumnos,
-  required this.idUsuario,
-});
-
+  const AlumnosListScreen({
+    super.key,
+    required this.alumnos,
+    required this.idUsuario,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-         automaticallyImplyLeading: false, 
-        title: const Text(
-          'Alumnos',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: const Color.fromARGB(221, 12, 39, 28),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app , color: Colors.white),
-            
-            onPressed: () {
-              Navigator.pop(
-                  context); // Al presionar el botón, se cierra la pantalla
-                   FeedbackModal.showFeedbackModal(context, idUsuario);
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ListView.builder(
-          itemCount: alumnos.length,
-          itemBuilder: (context, index) {
-            final alumno = alumnos[index];
-            return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+    return WillPopScope(
+        onWillPop: () async => false, // Bloqueo permanente del deslizamiento
+        child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text(
+              'Alumnos',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              elevation: 3,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: alumno['foto_alumnos'] != null
-                      ? MemoryImage(base64Decode(alumno['foto_alumnos']))
-                      : null,
-                  radius: 30,
-                  backgroundColor: Colors.green.shade100,
-                  child: alumno['foto_alumnos'] == null
-                      ? const Icon(Icons.person, size: 30)
-                      : null,
-                ),
-                title: Text(
-                  '${alumno['nombre_alumnos']} ${alumno['app_alumnos']} ${alumno['apm_alumnos']}',
-                  style: const TextStyle(fontSize: 18),
-                ),
-                subtitle: Text(
-                  'No. Control: ${alumno['nocontrol_alumnos']}\n'
-                  'Carrera: ${alumno['nombre_carrera_tecnica']}\n'
-                  'Grado: ${alumno['nombre_grado']} - Grupo: ${alumno['nombre_grupo']}',
-                  style: const TextStyle(fontSize: 14),
-                ),
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    _fetchAlumnoContacto(context, alumno['id_alumnos']);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    backgroundColor: const Color.fromARGB(221, 12, 39, 28),
-                  ),
-                  child: const Text(
-                    'Contacto Familiar',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+            ),
+            backgroundColor: const Color.fromARGB(221, 12, 39, 28),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.exit_to_app, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context); // Cerrar la pantalla
+                  FeedbackModal.showFeedbackModal(context, idUsuario);
+                },
               ),
-            );
-          },
-        ),
-      ),
-    );
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView.builder(
+              itemCount: alumnos.length,
+              itemBuilder: (context, index) {
+                final alumno = alumnos[index];
+                return Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  elevation: 3,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: alumno['foto_alumnos'] != null
+                          ? MemoryImage(base64Decode(alumno['foto_alumnos']))
+                          : null,
+                      radius: 30,
+                      backgroundColor: Colors.green.shade100,
+                      child: alumno['foto_alumnos'] == null
+                          ? const Icon(Icons.person, size: 30)
+                          : null,
+                    ),
+                    title: Text(
+                      '${alumno['nombre_alumnos']} ${alumno['app_alumnos']} ${alumno['apm_alumnos']}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      'No. Control: ${alumno['nocontrol_alumnos']}\n'
+                      'Carrera: ${alumno['nombre_carrera_tecnica']}\n'
+                      'Grado: ${alumno['nombre_grado']} - Grupo: ${alumno['nombre_grupo']}',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        _fetchAlumnoContacto(context, alumno['id_alumnos']);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: const Color.fromARGB(221, 12, 39, 28),
+                      ),
+                      child: const Text(
+                        'Contacto Familiar',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        )
+        );
   }
 
   Future<void> _fetchAlumnoContacto(BuildContext context, int idAlumno) async {
@@ -325,83 +325,86 @@ class AlumnosListScreen extends StatelessWidget {
   }
 
   void _showContactoFamiliar(
-    BuildContext context, Map<String, dynamic> alumno) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Row(
-        children: [
-          const Icon(Icons.family_restroom, color: Colors.green), // Icono para el título
-          const SizedBox(width: 10),
-          Text(
-            'Contacto Familiar de ${alumno['nombre_alumnos']}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(Icons.person, color: Colors.green), // Icono de persona
-              const SizedBox(width: 10),
-              Text(
-                'Familiar: ${alumno['nombre_completo_familiar']}',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(Icons.phone, color: Colors.green), // Icono de teléfono
-              const SizedBox(width: 10),
-              Text(
-                'Teléfono: ${alumno['telefono_familiar']}',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(Icons.work, color: Colors.green), // Icono de trabajo
-              const SizedBox(width: 10),
-              Text(
-                'Teléfono Trabajo: ${alumno['telefono_trabajo_familiar']}',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(Icons.email, color: Colors.green), // Icono de correo
-              const SizedBox(width: 10),
-              Text(
-                'Correo: ${alumno['correo_familiar']}',
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text(
-            'Cerrar',
-            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-          ),
+      BuildContext context, Map<String, dynamic> alumno) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.family_restroom,
+                color: Colors.green), // Icono para el título
+            const SizedBox(width: 10),
+            Text(
+              'Contacto Familiar de ${alumno['nombre_alumnos']}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
-}
-
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Icon(Icons.person,
+                    color: Colors.green), // Icono de persona
+                const SizedBox(width: 10),
+                Text(
+                  'Familiar: ${alumno['nombre_completo_familiar']}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Icon(Icons.phone,
+                    color: Colors.green), // Icono de teléfono
+                const SizedBox(width: 10),
+                Text(
+                  'Teléfono: ${alumno['telefono_familiar']}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Icon(Icons.work, color: Colors.green), // Icono de trabajo
+                const SizedBox(width: 10),
+                Text(
+                  'Teléfono Trabajo: ${alumno['telefono_trabajo_familiar']}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Icon(Icons.email, color: Colors.green), // Icono de correo
+                const SizedBox(width: 10),
+                Text(
+                  'Correo: ${alumno['correo_familiar']}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Cerrar',
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _showDialog(BuildContext context, String message) {
     showDialog(
