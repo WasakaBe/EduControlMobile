@@ -20,7 +20,7 @@ def flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "
 def flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 android {
-    namespace = "com.example.movil_educontrol"
+    namespace = "com.wasakabegein.movil_educontrol"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -30,11 +30,15 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.movil_educontrol"
+        applicationId = "com.wasakabegein.movil_educontrol"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInteger()
-        versionName = flutterVersionName
+        versionCode = 3
+        versionName = "1.1.1"
+        // Asegúrate de incluir la siguiente línea para habilitar la generación de símbolos de depuración
+        ndk {
+            debugSymbolLevel 'FULL' // Esta opción permite generar símbolos de depuración completos
+        }
     }
 
     signingConfigs {

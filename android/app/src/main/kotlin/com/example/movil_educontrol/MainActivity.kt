@@ -1,4 +1,4 @@
-package com.example.movil_educontrol
+package com.wasakabegein.movil_educontrol
 
 import io.flutter.embedding.android.FlutterActivity
 
